@@ -27,7 +27,7 @@ public class Order {
         this.price = price;
     }
 
-    public int getId() {
+    final int getId() {
         return id++;
     }
 
