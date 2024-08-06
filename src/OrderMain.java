@@ -9,6 +9,11 @@ import java.util.*;
 
 public class OrderMain{
 
+    private static File orderFile = new File("c:/imeunjae/shoppingCarProject/order.txt");
+
+    public static File getOrderFile() {
+        return orderFile;
+    }
 
     public static void main(String[] args) throws IOException {
 
@@ -90,11 +95,11 @@ public class OrderMain{
 
         Order orderInfo = new Order(name, productName, orderAmount, price);
 
-        File file = new File("order.txt"); // 파일 경로 설정
+
         try {
             // 1. 파일 읽어오기
             List<Integer> orderNumbers = new ArrayList<>();
-            try (BufferedReader bufReader = new BufferedReader(new FileReader(file))) {
+            try (BufferedReader bufReader = new BufferedReader(new FileReader(getOrderFile()))) {
                 String line;
                 while ((line = bufReader.readLine()) != null) {
                     // 주문 번호 추출
@@ -126,7 +131,7 @@ public class OrderMain{
             );
 
             // 4. 파일에 기록
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, true))) {
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(getOrderFile(), true))) {
                 writer.write(newOrderInfo);
                 System.out.println("새 주문 정보가 파일에 추가되었습니다.");
             }
@@ -138,9 +143,8 @@ public class OrderMain{
 
     }
 
-    private static void showOrder(){
-        File file = new File("c:/imeunjae/shoppingCarProject/order.txt");
-        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+    public static void showOrder(){
+        try (BufferedReader br = new BufferedReader(new FileReader(getOrderFile()))) {
             String str;
 
             List<String> orderLines = new ArrayList<>();
@@ -165,11 +169,11 @@ public class OrderMain{
         System.out.print("고객명: ");
         String orderedCustomerName = sc.nextLine();
 
-        File file = new File("c:/imeunjae/shoppingCarProject/order.txt");
+
         Charset charset = StandardCharsets.UTF_8;
 
         try {
-            List<String> lines = Files.readAllLines(file.toPath(), charset);
+            List<String> lines = Files.readAllLines(getOrderFile().toPath(), charset);
             boolean hasOrders = false;
 
             int orderTotalPrice = 0;
@@ -182,10 +186,13 @@ public class OrderMain{
 
                     String[] parts = line.split(",");
                     if (parts.length > 0) {
-                        String orderNumberPart = parts[4].trim();
-                        if (orderNumberPart.startsWith("가격:")) {
+                        String orderPricePart = parts[4].trim();
+                        String orderAccountPart = parts[3].trim();
+                        if (orderPricePart .startsWith("가격:")) {
                             try {
-                                orderTotalPrice += Integer.parseInt(orderNumberPart.split(":")[1].trim());
+                                int intOrderPricePart = Integer.parseInt(orderPricePart.split(":")[1].trim());
+                                int intAccountPricePart = Integer.parseInt(orderAccountPart.split(":")[1].trim());
+                                orderTotalPrice += intOrderPricePart * intAccountPricePart;
                             } catch (NumberFormatException e) {
 
                             }
@@ -217,11 +224,11 @@ public class OrderMain{
         System.out.print("조회 날짜: ");
         String orderedCustomerDate = sc.nextLine();
 
-        File file = new File("c:/imeunjae/shoppingCarProject/order.txt");
+
         Charset charset = StandardCharsets.UTF_8;
 
         try {
-            List<String> lines = Files.readAllLines(file.toPath(), charset);
+            List<String> lines = Files.readAllLines(getOrderFile().toPath(), charset);
             boolean hasOrders = false;
 
             for (String line : lines) {
